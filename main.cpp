@@ -1,7 +1,6 @@
 #include <iostream>
 #include "OutOfCoreSAC.h"
 
-
 //#define MAX_LINEA 40
 
 

@@ -26,6 +26,10 @@ public:
     int cargarParticiones(Instrucciones* instrucciones, int nro_particiones,
                           std::list<ManejaFilas>& particiones);
     ~ControlaArchivo();
+
+private:
+    int cargarParticion(ManejaFilas& particion, int nro_filas_por_particion);
+    int cargarFila(Fila& fila);
 };
 
 

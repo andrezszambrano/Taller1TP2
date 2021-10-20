@@ -7,7 +7,8 @@
 
 #define DOS_BYTES 2
 #define MAX_COLUMNAS 10
-
+#define ERROR -1
+#define EXITO 0
 
 //--------------------CLASE ARCHIVO----------------------------------//
 Archivo::Archivo(const char* path_al_archivo)
@@ -19,7 +20,13 @@ Archivo::Archivo(const char* path_al_archivo)
 
 int Archivo::leerNBytes(char* buf, int cant_bytes) {
     this->ptrArchivo.read(buf, cant_bytes);
-    return 0;
+    int leidos;
+    if (this->ptrArchivo.eof()){
+        leidos = 0;
+    } else {
+        leidos = this->ptrArchivo.gcount();
+    }
+    return leidos;
 }
 
 Archivo::~Archivo() {
@@ -35,6 +42,35 @@ ControlaArchivo::ControlaArchivo(const char* pathAlArchivo, int nro_columnas)
 
 }
 
+int ControlaArchivo::cargarFila(Fila& fila) {
+    for (int i = 0; i < this->nro_columnas; i++){
+        uint16_t numBE;
+        int aux = this->archivo.leerNBytes(reinterpret_cast<char*>
+                                           (&numBE),
+                                           sizeof(numBE));
+        if (aux < 1){
+            std::cerr << "La cantidad de números totales en el dataset no es"
+                         "múltiplo de la cantidad de columnas pedidas.";
+            return ERROR;
+        }
+        uint16_t num = ntohs(numBE);
+        fila.aniadirNumero(num);
+    }
+    return EXITO;
+}
+
+int ControlaArchivo::cargarParticion(ManejaFilas& particion,
+                                      int nro_filas_por_particion) {
+    for (int i = 0; i < nro_filas_por_particion; i++){
+        Fila fila_aux;
+        int aux = this->cargarFila(fila_aux);
+        if (aux == ERROR)
+            return ERROR;
+        particion.aniadirFila(std::move(fila_aux));
+    }
+    return EXITO;
+}
+
 int ControlaArchivo::cargarParticiones(Instrucciones* instrucciones,
                                         int nro_particiones,
                                         std::list<ManejaFilas>& particiones){
@@ -42,17 +78,10 @@ int ControlaArchivo::cargarParticiones(Instrucciones* instrucciones,
     int cant_particiones = 0;
     while (!lectura_finalizada){
         ManejaFilas particion_aux;
-        for (int i = 0; i < instrucciones->nro_filas_por_particion; i++){
-            Fila fila_aux;
-            for (int j = 0; j < this->nro_columnas; j++){
-                uint16_t numBE;
-                this->archivo.leerNBytes(reinterpret_cast<char*>(&numBE),
-                                         sizeof(numBE));
-                uint16_t num = ntohs(numBE);
-                fila_aux.aniadirNumero(num);
-            }
-            particion_aux.aniadirFila(std::move(fila_aux));
-        }
+        int aux = this->cargarParticion(particion_aux,
+                                        instrucciones->nro_filas_por_particion);
+        if (aux == ERROR)
+            return ERROR;
         particiones.push_back(std::move(particion_aux));
         cant_particiones++;
         if (cant_particiones == nro_particiones){
