@@ -3,3 +3,5 @@
 *.o-tsan
 tp
 tp-tsan
+.idea/
+cmake-build-debug/

@@ -1,7 +1,7 @@
 #ifndef TUTORIAL_MANEJAFILAS_H
 #define TUTORIAL_MANEJAFILAS_H
 
-#include "fila.h"
+#include "Fila.h"
 #include <list>
 class ManejaFilas {
 
@@ -10,6 +10,9 @@ private:
 
 public:
     ManejaFilas();
+    ManejaFilas(const ManejaFilas& otroMF) = delete;
+    ManejaFilas(ManejaFilas&& otroMF);
+    void aniadirFila(Fila&& fila);
     ~ManejaFilas();
 };
 
