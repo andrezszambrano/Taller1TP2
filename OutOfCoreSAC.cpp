@@ -5,7 +5,7 @@
 
 OutOfCoreSAC::OutOfCoreSAC(const char* path_al_archivo, int nro_columnas,
                             int nro_hilos)
-                            :archivo(path_al_archivo, nro_columnas),
+                            :controla_archivo(path_al_archivo, nro_columnas),
                             cant_hilos(nro_hilos) {
 
 }
@@ -21,7 +21,7 @@ void OutOfCoreSAC::ejecutarOperacionSobreParticiones(int nro_columna,
 void OutOfCoreSAC::hacerOperacion() {
     Instrucciones instruc;
     recibirInstruccion(&instruc);
-    int cant_particiones = this->archivo.cargarParticiones(&instruc,
+    int cant_particiones = this->controla_archivo.cargarParticiones(&instruc,
                                                            this->cant_hilos,
                                                            (this->particiones));
     this->ejecutarOperacionSobreParticiones(instruc.nro_columna,

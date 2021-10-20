@@ -1,14 +1,14 @@
 #ifndef TP2FINAL_OUTOFCORESAC_H
 #define TP2FINAL_OUTOFCORESAC_H
 
-#include "Archivo.h"
+#include "ControlaArchivo.h"
 #include "ManejaFilas.h"
 #include <list>
 
 class OutOfCoreSAC {
 
 private:
-    Archivo archivo;
+    ControlaArchivo controla_archivo;
     std::list<ManejaFilas> particiones;
     int cant_hilos;
 
