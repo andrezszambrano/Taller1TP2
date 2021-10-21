@@ -21,7 +21,8 @@ public:
     ~OutOfCoreSAC();
 
 private:
-
+    int cargarFilasDisponibles(std::list<Fila>& filas, int filas_restantes,
+                                int max_filas);
     void ejecutarOperacionSobreParticiones(int nro_columna, std::string op,
                                            int cant_particiones);
 

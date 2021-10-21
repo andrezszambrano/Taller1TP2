@@ -9,7 +9,9 @@
 #define MAX_COLUMNAS 10
 #define ERROR -1
 #define EXITO 0
-
+#define FIN_DEL_ARCHIVO 1
+#define PARTICION_PARCIAL_VALIDA 2
+#define PARTICION_INVALIDA 3
 //--------------------CLASE ARCHIVO----------------------------------//
 Archivo::Archivo(const char* path_al_archivo)
         :ptrArchivo(path_al_archivo, std::ios::binary) {
@@ -48,10 +50,12 @@ int ControlaArchivo::cargarFila(Fila& fila) {
         int aux = this->archivo.leerNBytes(reinterpret_cast<char*>
                                            (&numBE),
                                            sizeof(numBE));
-        if (aux < 1){
+        if (aux < 1 && i > 0){
             std::cerr << "La cantidad de números totales en el dataset no es"
                          "múltiplo de la cantidad de columnas pedidas.";
             return ERROR;
+        } else if (aux < 1){
+            return FIN_DEL_ARCHIVO;
         }
         uint16_t num = ntohs(numBE);
         fila.aniadirNumero(num);
@@ -66,14 +70,49 @@ int ControlaArchivo::cargarParticion(ManejaFilas& particion,
         int aux = this->cargarFila(fila_aux);
         if (aux == ERROR)
             return ERROR;
+        else if (aux == FIN_DEL_ARCHIVO && i == 0)
+            return PARTICION_INVALIDA; //Particion no va a tener ninguna fila
+        else if (aux == FIN_DEL_ARCHIVO)
+            return PARTICION_PARCIAL_VALIDA; //Particion va a tener al menos
+            //una fila
         particion.aniadirFila(std::move(fila_aux));
     }
     return EXITO;
 }
 
+void ControlaArchivo::descartarPrimerasNFilas(int cant_filas_a_descartar) {
+        for (int i = 0; i < cant_filas_a_descartar; i++){
+            for (int j = 0; j < this->nro_columnas; j++){
+                char aux[2];
+                this->archivo.leerNBytes(aux, DOS_BYTES*sizeof(uint8_t));
+            }
+        }
+}
+
+int ControlaArchivo::cargarHastaNFilas(std::list<Fila>& filas,
+                                   int cant_filas_a_cargar) {
+    int filas_cargadas = 0;
+    while (filas_cargadas < cant_filas_a_cargar){
+        Fila fila_aux;
+        int aux = this->cargarFila(fila_aux);
+        if (aux == ERROR)
+            return ERROR;
+        else if (aux == FIN_DEL_ARCHIVO)
+            return filas_cargadas;
+        filas.push_back(std::move(fila_aux));
+        filas_cargadas++;
+    }
+    return filas_cargadas;
+}
+/*
 int ControlaArchivo::cargarParticiones(Instrucciones* instrucciones,
                                         int nro_particiones,
                                         std::list<ManejaFilas>& particiones){
+    this->descartarPrimerasNFilas(instrucciones->fila_inicial);
+    int filas_por_cargar = instrucciones->fila_final -
+                           instrucciones->fila_inicial;
+    std::list<Fila> filas_aux;
+    this->cargarNFilas(filas_aux, filas_por_cargar);
     bool  lectura_finalizada = false;
     int cant_particiones = 0;
     while (!lectura_finalizada){
@@ -82,14 +121,17 @@ int ControlaArchivo::cargarParticiones(Instrucciones* instrucciones,
                                         instrucciones->nro_filas_por_particion);
         if (aux == ERROR)
             return ERROR;
-        particiones.push_back(std::move(particion_aux));
-        cant_particiones++;
-        if (cant_particiones == nro_particiones){
+        if (aux == EXITO || aux == PARTICION_PARCIAL_VALIDA){
+            particiones.push_back(std::move(particion_aux));
+            cant_particiones++;
+        }
+        if (cant_particiones == nro_particiones ||
+            aux == PARTICION_PARCIAL_VALIDA || aux == PARTICION_INVALIDA){
             lectura_finalizada = true;
         }
     }
     return cant_particiones;
-}
+}*/
 
 ControlaArchivo::~ControlaArchivo(){
 

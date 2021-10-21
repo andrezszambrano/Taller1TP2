@@ -23,8 +23,8 @@ private:
     int nro_columnas;
 public:
     ControlaArchivo(const char* pathAlArchivo, int nro_columnas);
-    int cargarParticiones(Instrucciones* instrucciones, int nro_particiones,
-                          std::list<ManejaFilas>& particiones);
+    void descartarPrimerasNFilas(int cant_filas_a_descartar);
+    int cargarHastaNFilas(std::list<Fila>& filas, int cant_filas_a_cargar);
     ~ControlaArchivo();
 
 private:
