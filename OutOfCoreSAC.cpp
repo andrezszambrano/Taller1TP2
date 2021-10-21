@@ -40,8 +40,9 @@ void OutOfCoreSAC::hacerOperacion() {
         int aux = this->cargarFilasDisponibles(filas, filas_totales_a_cargar -
                                                 filas_cargadas,
                                                 max_filas_a_cargar) ;
-        if (aux == ERROR)
-            return ERROR;
+        if (aux == ERROR || aux == 0)
+            return ERROR; //Si se leyeron solo 0 filas es que se pidieron más
+                            //filas de las que tiene el archivo
         filas_cargadas = aux + filas_cargadas;
         //armarParticiones();
         //ejecutarParticiones();

@@ -6,6 +6,8 @@
 #include <arpa/inet.h>
 
 #define DOS_BYTES 2
+#define UN_BYTE 1
+#define CERO_BYTES 0
 #define MAX_COLUMNAS 10
 #define ERROR -1
 #define EXITO 0
@@ -21,13 +23,14 @@ Archivo::Archivo(const char* path_al_archivo)
 }
 
 int Archivo::leerNBytes(char* buf, int cant_bytes) {
+    int leidos = 0;
+    if (this->ptrArchivo.eof())
+        return leidos; //Si ya estaba en eof no intento leer. Es necesario
+                        //verificar para cuando piden leer x filas y solo hay
+                        //w filas, x > w.
     this->ptrArchivo.read(buf, cant_bytes);
-    int leidos;
-    if (this->ptrArchivo.eof()){
-        leidos = 0;
-    } else {
+    if (!(this->ptrArchivo.eof()))
         leidos = this->ptrArchivo.gcount();
-    }
     return leidos;
 }
 
@@ -50,11 +53,15 @@ int ControlaArchivo::cargarFila(Fila& fila) {
         int aux = this->archivo.leerNBytes(reinterpret_cast<char*>
                                            (&numBE),
                                            sizeof(numBE));
-        if (aux < 1 && i > 0){
+        if (aux == UN_BYTE){
+            std::cerr << "Cada número debe estar compuesto por dos bytes."
+                         "Revise su dataset.";
+            return ERROR;
+        } else if (aux == CERO_BYTES && i > 0){
             std::cerr << "La cantidad de números totales en el dataset no es"
                          "múltiplo de la cantidad de columnas pedidas.";
             return ERROR;
-        } else if (aux < 1){
+        } else if (aux == CERO_BYTES){
             return FIN_DEL_ARCHIVO;
         }
         uint16_t num = ntohs(numBE);
