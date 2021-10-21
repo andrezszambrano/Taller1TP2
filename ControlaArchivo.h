@@ -3,7 +3,7 @@
 
 #include <fstream>
 #include <list>
-#include "ManejaFilas.h"
+#include "ManejaParticiones.h"
 #include "RecibeInstrucciones.h"
 
 class Archivo {
@@ -57,7 +57,7 @@ public:
     ~ControlaArchivo();
 
 private:
-    int cargarParticion(ManejaFilas& particion, int nro_filas_por_particion);
+    int cargarParticion(Particion& particion, int nro_filas_por_particion);
 
     //Carga una fila según el número de columnas requerido. Si en la primera
     //iteración se intenta leer el archivo y se cargan 0 bytes, significa que

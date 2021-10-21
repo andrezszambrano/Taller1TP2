@@ -1,5 +1,5 @@
 #include "ControlaArchivo.h"
-#include "Fila.h"
+#include "ManejaParticiones.h"
 #include <iostream>
 
 #include <stdint.h>
@@ -72,7 +72,7 @@ int ControlaArchivo::cargarFila(Fila& fila) {
     }
     return EXITO;
 }
-
+/*
 int ControlaArchivo::cargarParticion(ManejaFilas& particion,
                                       int nro_filas_por_particion) {
     for (int i = 0; i < nro_filas_por_particion; i++){
@@ -89,7 +89,7 @@ int ControlaArchivo::cargarParticion(ManejaFilas& particion,
     }
     return EXITO;
 }
-
+*/
 int ControlaArchivo::descartarPrimerasNFilas(int cant_filas_a_descartar) {
     std::list<Fila> filas_a_descartar;
     int aux = this->cargarHastaNFilas(filas_a_descartar,
@@ -127,39 +127,10 @@ int ControlaArchivo::cargarHastaNFilas(std::list<Fila>& filas,
     }
     return filas_cargadas;
 }
-/*
-int ControlaArchivo::cargarParticiones(Instrucciones* instrucciones,
-                                        int nro_particiones,
-                                        std::list<ManejaFilas>& particiones){
-    this->descartarPrimerasNFilas(instrucciones->fila_inicial);
-    int filas_por_cargar = instrucciones->fila_final -
-                           instrucciones->fila_inicial;
-    std::list<Fila> filas_aux;
-    this->cargarNFilas(filas_aux, filas_por_cargar);
-    bool  lectura_finalizada = false;
-    int cant_particiones = 0;
-    while (!lectura_finalizada){
-        ManejaFilas particion_aux;
-        int aux = this->cargarParticion(particion_aux,
-                                        instrucciones->nro_filas_por_particion);
-        if (aux == ERROR)
-            return ERROR;
-        if (aux == EXITO || aux == PARTICION_PARCIAL_VALIDA){
-            particiones.push_back(std::move(particion_aux));
-            cant_particiones++;
-        }
-        if (cant_particiones == nro_particiones ||
-            aux == PARTICION_PARCIAL_VALIDA || aux == PARTICION_INVALIDA){
-            lectura_finalizada = true;
-        }
-    }
-    return cant_particiones;
-}*/
 
 ControlaArchivo::~ControlaArchivo(){
 
 }
-
 
 
 //-----------------CLASE CONTROLA_ARCHIVO---------------------------//
