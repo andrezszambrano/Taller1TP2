@@ -5,6 +5,7 @@
 #include <stdint.h>
 #include <arpa/inet.h>
 
+#define ARCHIVO_INEXISTENTE -2
 #define DOS_BYTES 2
 #define UN_BYTE 1
 #define CERO_BYTES 0
@@ -17,9 +18,8 @@
 //--------------------CLASE ARCHIVO----------------------------------//
 Archivo::Archivo(const char* path_al_archivo)
         :ptrArchivo(path_al_archivo, std::ios::binary) {
-        if (!ptrArchivo.is_open()){
-            std::cerr << "El archivo no se abrió correctamente";
-        }
+        if (!ptrArchivo.is_open())
+           throw std::runtime_error("El archivo no existe.");
 }
 
 int Archivo::leerNBytes(char* buf, int cant_bytes) {

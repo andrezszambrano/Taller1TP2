@@ -13,7 +13,7 @@ private:
 
 public:
     //Crea un archivo con su puntero al archivo dado por el path. En caso de que
-    //el archivo no exista se lanza una excepción.
+    //el archivo no exista se imprime en stderr y se lanza una excepción.
     Archivo(const char* pathAlArchivo);
 
     //Se leen hasta cant_bytes del archivo, almacenandolos en el buffer. Se
