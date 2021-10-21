@@ -2,6 +2,8 @@
 #include "RecibeInstrucciones.h"
 #include <iostream>
 
+#define ERROR -1
+#define EXITO 0
 
 OutOfCoreSAC::OutOfCoreSAC(const char* path_al_archivo, int nro_columnas,
                             int nro_hilos)
@@ -27,10 +29,16 @@ int OutOfCoreSAC::cargarFilasDisponibles(std::list<Fila>& filas,
 }
 
 
-void OutOfCoreSAC::hacerOperacion() {
+int OutOfCoreSAC::hacerOperacion() {
     Instrucciones instruc;
     recibirInstruccion(&instruc);
-    this->controla_archivo.descartarPrimerasNFilas(instruc.fila_inicial);
+    {
+        int aux = this->controla_archivo.descartarPrimerasNFilas(
+                                                        instruc.fila_inicial);
+        if (aux == ERROR)
+            return ERROR;
+
+    }
     int filas_totales_a_cargar = instruc.fila_final - instruc.fila_inicial;
     int max_filas_a_cargar = this->cant_hilos*instruc.nro_filas_por_particion;
     int filas_cargadas = 0;
@@ -49,6 +57,7 @@ void OutOfCoreSAC::hacerOperacion() {
         if (filas_cargadas == filas_totales_a_cargar)
             iterar = false;
     }
+    return EXITO;
 }
 
 

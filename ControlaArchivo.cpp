@@ -24,10 +24,13 @@ Archivo::Archivo(const char* path_al_archivo)
 
 int Archivo::leerNBytes(char* buf, int cant_bytes) {
     int leidos = 0;
-    if (this->ptrArchivo.eof())
+    if (this->ptrArchivo.eof()){
+        std::cerr << "Está intentando leer un archivo que está finalizado.";
         return leidos; //Si ya estaba en eof no intento leer. Es necesario
-                        //verificar para cuando piden leer x filas y solo hay
-                        //w filas, x > w.
+        //verificar para cuando piden leer x filas y solo hay
+        //w filas, x > w.
+    }
+
     this->ptrArchivo.read(buf, cant_bytes);
     if (!(this->ptrArchivo.eof()))
         leidos = this->ptrArchivo.gcount();
@@ -87,13 +90,26 @@ int ControlaArchivo::cargarParticion(ManejaFilas& particion,
     return EXITO;
 }
 
-void ControlaArchivo::descartarPrimerasNFilas(int cant_filas_a_descartar) {
-        for (int i = 0; i < cant_filas_a_descartar; i++){
-            for (int j = 0; j < this->nro_columnas; j++){
+int ControlaArchivo::descartarPrimerasNFilas(int cant_filas_a_descartar) {
+    std::list<Fila> filas_a_descartar;
+    int aux = this->cargarHastaNFilas(filas_a_descartar,
+                                      cant_filas_a_descartar);
+    if (aux == ERROR){
+        return ERROR;
+    } else if (aux < cant_filas_a_descartar){
+        std::cerr << "Se pidieron descartar más filas de las que hay en el"
+                     "dataset. Revise las instrucciones que puso.";
+        return ERROR;
+    } else{
+        return EXITO;
+    }
+
+    /*for (int i = 0; i < cant_filas_a_descartar; i++){
+        for (int j = 0; j < this->nro_columnas; j++){
                 char aux[2];
                 this->archivo.leerNBytes(aux, DOS_BYTES*sizeof(uint8_t));
             }
-        }
+        }*/
 }
 
 int ControlaArchivo::cargarHastaNFilas(std::list<Fila>& filas,
