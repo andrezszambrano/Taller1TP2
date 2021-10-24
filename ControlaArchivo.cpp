@@ -98,6 +98,10 @@ int ControlaArchivo::cargarHastaNFilas(std::list<Fila>& filas,
     return filas_cargadas;
 }
 
+int ControlaArchivo::getNroColumnas(){
+    return this->nro_columnas;
+}
+
 ControlaArchivo::~ControlaArchivo(){
 }
 

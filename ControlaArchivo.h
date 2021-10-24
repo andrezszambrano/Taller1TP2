@@ -59,7 +59,7 @@ public:
 
     int cargarFilasSegunInfo(std::list<Fila>& filas,
                                               const InfoParticion& info);
-
+    int getNroColumnas();
     //Se liberan los recursos acorde.
     ~ControlaArchivo();
 

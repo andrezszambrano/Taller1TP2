@@ -19,7 +19,8 @@ void OutOfCoreSAC::cargarTodasLasTareas(ThreadSafeQueue& cola,
     bool hay_tareas = true;
     while (hay_tareas) {
         Instrucciones instruc;
-        int aux = recibirInstruccion(&instruc);
+        int aux = recibirInstruccion(&instruc,
+                                     this->controla_archivo.getNroColumnas());
         if (aux == SIN_INSTRUCCIONES) {
             hay_tareas = false;
         } else {
