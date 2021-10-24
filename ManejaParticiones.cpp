@@ -30,8 +30,8 @@ Particion::Particion() {
 
 }
 
-Particion::Particion(std::list<Fila>&& filas)
-        :filas(std::move(filas)), cant_filas(filas.size()){
+Particion::Particion(std::list<Fila>&& filas, int cant_filas)
+        :filas(std::move(filas)), cant_filas(cant_filas){
 
 }
 
@@ -79,20 +79,20 @@ int sum(std::list<Fila>& filas, int nro_columna) {
 }
 
 int max(std::list<Fila>& filas, int nro_columna) {
-    int max = 0;
+    int max = filas.front().getColumna(nro_columna);
     for (auto const& fila : filas) {
         int aux = fila.getColumna(nro_columna);
-        if (max < aux)
+        if (aux > max)
             max = aux;
     }
     return max;
 }
 
 int min(std::list<Fila>& filas, int nro_columna) {
-    int min = 0;
+    int min = filas.front().getColumna((nro_columna));
     for (auto const& fila : filas) {
         int aux = fila.getColumna(nro_columna);
-        if (min > aux)
+        if (aux < min)
             min = aux;
     }
     return min;

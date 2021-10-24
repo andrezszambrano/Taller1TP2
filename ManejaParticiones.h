@@ -30,7 +30,7 @@ private:
     int cant_filas;
 public:
     Particion();
-    Particion(std::list<Fila>&& filas);
+    Particion(std::list<Fila>&& filas, int cant_filas);
     //Recibiendo una lista de particiones por referencia, crea particiones según
     //la cantidad de filas por particiones requerida.
     void operarFilas(std::shared_ptr<ResultadosParciales>&&

@@ -13,6 +13,8 @@ public:
 };
 
 class ResultadosParciales {
+
+protected:
     std::list<int> resultados;
     int resultado_final;
 
@@ -33,4 +35,31 @@ public:
     virtual void imprimirResultado();
 };
 
+class ResultadosParcialesMin: public ResultadosParciales {
+
+public:
+    virtual void guardarResultado(int resultado, int cant_filas);
+    virtual void terminarOperacion();
+    virtual void imprimirResultado();
+};
+
+class ResultadosParcialesMax: public ResultadosParciales {
+
+public:
+    virtual void guardarResultado(int resultado, int cant_filas);
+    virtual void terminarOperacion();
+    virtual void imprimirResultado();
+};
+
+class ResultadosParcialesMean: public ResultadosParciales {
+
+private:
+    int nro_filas;
+
+public:
+    ResultadosParcialesMean();
+    virtual void guardarResultado(int resultado, int cant_filas);
+    virtual void terminarOperacion();
+    virtual void imprimirResultado();
+};
 #endif //TP2FINAL_RESULTADOSPARCIALES_H

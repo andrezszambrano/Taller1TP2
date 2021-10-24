@@ -7,6 +7,7 @@
 #define ERROR -1
 #define EXITO 0
 #define SIN_INSTRUCCIONES -1
+
 OutOfCoreSAC::OutOfCoreSAC(const char* path_al_archivo, int nro_columnas,
                             int nro_hilos)
                             :controla_archivo(path_al_archivo, nro_columnas),
@@ -66,7 +67,7 @@ void OutOfCoreSAC::ejecutarTareas(ThreadSafeQueue& cola) {
         } else {
             std::list<Fila> filas;
             this->controla_archivo.cargarFilasSegunInfo(filas, info);
-            Particion particion(std::move(filas));
+            Particion particion(std::move(filas), filas.size());
             particion.operarFilas(std::move(info.resultados_parciales),
                                   info.nro_columna, info.operacion);
         }
@@ -152,5 +153,5 @@ int OutOfCoreSAC::hacerOperacion() {
 
 
 OutOfCoreSAC::~OutOfCoreSAC() {
-    std::cout << "Hola Destructor de OOCSAC!";
+
 }

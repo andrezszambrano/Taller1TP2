@@ -33,7 +33,6 @@ int Archivo::setearOffset(int offset) {
 
 Archivo::~Archivo() {
     fclose(this->ptrArchivo);
-    std::cout << "Hola Destructor de archivo!";
 }
 //--------------------CLASE ARCHIVO----------------------------------//
 
