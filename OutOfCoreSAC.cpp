@@ -39,8 +39,8 @@ void OutOfCoreSAC::cargarTodasLasTareas(ThreadSafeQueue& cola,
         if (aux == SIN_INSTRUCCIONES) {
             hay_tareas = false;
         } else {
-           std::shared_ptr<ResultadosParciales> ptr =
-                                        std::make_shared<ResultadosParciales>();
+           std::shared_ptr<ResultadosParciales> ptr;
+           ResultadosParciales::crear(ptr, instruc.operacion);
            resultados.push_back(ptr);
            for (int fila_inicial = instruc.fila_inicial;
                 fila_inicial < instruc.fila_final;
@@ -73,12 +73,22 @@ void OutOfCoreSAC::ejecutarTareas(ThreadSafeQueue& cola) {
     }
 }
 
+void juntarResultadosParcialesYMostrar(
+            std::list<std::shared_ptr<ResultadosParciales>>& resultados) {
+    std::list<std::shared_ptr<ResultadosParciales>>::iterator it;
+    for (it = resultados.begin(); it != resultados.end(); ++it){
+        (*it)->terminarOperacion();
+        (*it)->imprimirResultado();
+    }
+}
+
 int OutOfCoreSAC::hacerOperacionEnHiloMain() {
     //Como no se tendrán threads, cargo todas las particiones de una vez
     std::list<std::shared_ptr<ResultadosParciales>> resultados;
     ThreadSafeQueue cola;
     this->cargarTodasLasTareas(cola, resultados);
     this->ejecutarTareas(cola);
+    juntarResultadosParcialesYMostrar(resultados);
     return EXITO;
 }
 
