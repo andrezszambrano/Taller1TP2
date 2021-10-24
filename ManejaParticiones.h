@@ -29,14 +29,10 @@ private:
 public:
     Particion();
     Particion(std::list<Fila>&& filas, int cant_filas);
-    //Recibiendo una lista de particiones por referencia, crea particiones según
-    //la cantidad de filas por particiones requerida.
     void operarFilas(std::shared_ptr<ResultadosParciales>&&
                         resultados_parciales, int nro_columna, std::string op);
     Particion(const Particion& otroMF) = delete;
     Particion(Particion&& otraParticion);
-   // ejecutarOperacion(int nro_columna, std::string operacion, particiones)
-    //void aniadirFila(Fila&& fila);
     ~Particion();
 };
 

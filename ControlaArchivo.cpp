@@ -15,27 +15,24 @@
 #define FIN_DEL_ARCHIVO 1
 #define PARTICION_PARCIAL_VALIDA 2
 #define PARTICION_INVALIDA 3
+
 //--------------------CLASE ARCHIVO----------------------------------//
+
 Archivo::Archivo(const char* path_al_archivo) {
     this->ptr_archivo = fopen(path_al_archivo, "rb");
     if (!ptr_archivo)
-           throw std::runtime_error("El archivo no existe.");
+           throw std::runtime_error("Error: el archivo no existe.");
 }
 
-//Archivo::Archivo(Archivo& otro_archivo) {//Para que cppcheck no se queje
-  //  this->ptr_archivo = otro_archivo.ptr_archivo;
-//}
-
-Archivo& Archivo::operator=(const Archivo& otro_archivo) {
-    if (this != &otro_archivo) {
-        this->ptr_archivo = otro_archivo.ptr_archivo;
+Archivo& Archivo::operator=(const Archivo& otro_archivo) { //CppLink se quejaba
+    if (this != &otro_archivo) {                            //si no estaba
+        this->ptr_archivo = otro_archivo.ptr_archivo;       //esta función
     }
     return *this;
 }
 
 int Archivo::leerNBytes(char* buf, int cant_bytes) {
-    int leidos = fread(buf, 1, cant_bytes, this->ptr_archivo);
-    return leidos;
+    return fread(buf, 1, cant_bytes, this->ptr_archivo);
 }
 
 int Archivo::setearOffset(int offset) {
@@ -45,6 +42,7 @@ int Archivo::setearOffset(int offset) {
 Archivo::~Archivo() {
     fclose(this->ptr_archivo);
 }
+
 //--------------------CLASE ARCHIVO----------------------------------//
 
 //-----------------CLASE CONTROLA_ARCHIVO---------------------------//
@@ -75,44 +73,6 @@ int ControlaArchivo::cargarFila(Fila& fila) {
     }
     return EXITO;
 }
-/*
-int ControlaArchivo::cargarParticion(ManejaFilas& particion,
-                                      int nro_filas_por_particion) {
-    for (int i = 0; i < nro_filas_por_particion; i++){
-        Fila fila_aux;
-        int aux = this->cargarFila(fila_aux);
-        if (aux == ERROR)
-            return ERROR;
-        else if (aux == FIN_DEL_ARCHIVO && i == 0)
-            return PARTICION_INVALIDA; //Particion no va a tener ninguna fila
-        else if (aux == FIN_DEL_ARCHIVO)
-            return PARTICION_PARCIAL_VALIDA; //Particion va a tener al menos
-            //una fila
-        particion.aniadirFila(std::move(fila_aux));
-    }
-    return EXITO;
-}
-*//*
-int ControlaArchivo::descartarPrimerasNFilas(int cant_filas_a_descartar) {
-    std::list<Fila> filas_a_descartar;
-    int aux = this->cargarHastaNFilas(filas_a_descartar,
-                                      cant_filas_a_descartar);
-    if (aux == ERROR){
-        return ERROR;
-    } else if (aux < cant_filas_a_descartar){
-        std::cerr << "Se pidieron descartar más filas de las que hay en el"
-                     "dataset. Revise las instrucciones que puso.";
-        return ERROR;
-    } else{
-        return EXITO;
-    }
-    for (int i = 0; i < cant_filas_a_descartar; i++){
-        for (int j = 0; j < this->nro_columnas; j++){
-                char aux[2];
-                this->archivo.leerNBytes(aux, DOS_BYTES*sizeof(uint8_t));
-            }
-        }
-}*/
 
 int ControlaArchivo::cargarFilasSegunInfo(std::list<Fila>& filas,
                                           const InfoParticion& info) {

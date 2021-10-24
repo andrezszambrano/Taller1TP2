@@ -46,26 +46,6 @@ void Particion::operarFilas(std::shared_ptr<ResultadosParciales>&&
     resultados_parciales->guardarResultado(resultado, this->cant_filas);
 }
 
-/*
-int Particion::generarParticiones(std::list<Particion>& particiones,
-                                  int particiones_por_fila,
-                                  std::list<Fila>&& filas) {
-   std::list<Fila>::iterator it = filas.begin();
-   while (it != filas.end()){
-       Particion particion_aux;
-       for (int i = 0; i < particiones_por_fila && it != filas.end(); i++){
-           particion_aux.aniadirFila(std::move(*it));
-           it++;
-       }
-       particiones.push_back(std::move(particion_aux));
-   }
-    return EXITO;
-}*/
-/*
-void Particion::aniadirFila(Fila&& fila){
-    this->filas.push_back(std::move(fila));
-}*/
-
 Particion::~Particion() {
 }
 

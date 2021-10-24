@@ -32,20 +32,12 @@ public:
     ~OutOfCoreSAC();
 
 private:
-    //Compara el número de filas restantes y la cantidad máxima de filas que se
-    //pueden cargar, y se intentan cargar como máximo N filas, N siendo el
-    //número menor de estos. Si hay algún error en el formato del dataset se
-    //retorna -1. Se retorna la cantidad cargada de filas: un número entre 0 y N
-   // int cargarFilasDisponibles(std::list<Fila>& filas, int filas_restantes,
-     //                           int max_filas);
 
     int hacerOperacionEnHiloMain();
 
     void cargarTodasLasTareas(ThreadSafeQueue& cola,
                    std::list<std::shared_ptr<ResultadosParciales>>& resultados);
 
-  //  void ejecutarOperacionSobreParticiones(int nro_columna, std::string op,
-    //                                       int cant_particiones);
     void ejecutarTareas(ThreadSafeQueue& cola);
 };
 

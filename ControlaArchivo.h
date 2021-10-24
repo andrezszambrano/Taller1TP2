@@ -64,8 +64,6 @@ public:
     ~ControlaArchivo();
 
 private:
-    int cargarParticion(Particion& particion, int nro_filas_por_particion);
-
     //Carga una fila según el número de columnas requerido. Si en la primera
     //iteración se intenta leer el archivo y se cargan 0 bytes, significa que
     //el archivo ya terminó y se retorna 1. Si en alguna otra iteración se
