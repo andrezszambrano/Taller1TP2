@@ -9,7 +9,7 @@
 class Archivo {
 
 private:
-    std::ifstream ptrArchivo;
+    FILE* ptrArchivo;
 
 public:
     //Crea un archivo con su puntero al archivo dado por el path. En caso de que
@@ -22,6 +22,8 @@ public:
     //dicho flag, se retorna 0, en otro caso se retorna la cantidad de bytes
     //leidos.
     int leerNBytes(char* buf, int cant_bytes);
+
+    int setearOffset(int offset);
 
     //Se destruye el archivo liberando sus recursos acorde.
     ~Archivo();
@@ -52,6 +54,9 @@ public:
     //se retorna la cantidad de filas que se pudieron cargar, un número entre 0
     //y cant_filas_a_cargar.
     int cargarHastaNFilas(std::list<Fila>& filas, int cant_filas_a_cargar);
+
+    int cargarFilasSegunInfo(std::list<Fila>& filas,
+                                              InfoParticion& info);
 
     //Se liberan los recursos acorde.
     ~ControlaArchivo();

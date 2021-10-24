@@ -4,7 +4,7 @@
 
 #include <stdint.h>
 #include <arpa/inet.h>
-
+#include <cstdio>
 #define ARCHIVO_INEXISTENTE -2
 #define DOS_BYTES 2
 #define UN_BYTE 1
@@ -16,29 +16,23 @@
 #define PARTICION_PARCIAL_VALIDA 2
 #define PARTICION_INVALIDA 3
 //--------------------CLASE ARCHIVO----------------------------------//
-Archivo::Archivo(const char* path_al_archivo)
-        :ptrArchivo(path_al_archivo, std::ios::binary) {
-        if (!ptrArchivo.is_open())
+Archivo::Archivo(const char* path_al_archivo) {
+    this->ptrArchivo = fopen(path_al_archivo, "rb");
+    if (!ptrArchivo)
            throw std::runtime_error("El archivo no existe.");
 }
 
 int Archivo::leerNBytes(char* buf, int cant_bytes) {
-    int leidos = 0;
-    if (this->ptrArchivo.eof()){
-        std::cerr << "Está intentando leer un archivo que está finalizado.";
-        return leidos; //Si ya estaba en eof no intento leer. Es necesario
-        //verificar para cuando piden leer x filas y solo hay
-        //w filas, x > w.
-    }
-
-    this->ptrArchivo.read(buf, cant_bytes);
-    if (!(this->ptrArchivo.eof()))
-        leidos = this->ptrArchivo.gcount();
+    int leidos = fread(buf, 1, cant_bytes, this->ptrArchivo);
     return leidos;
 }
 
+int Archivo::setearOffset(int offset) {
+    return std::fseek(this->ptrArchivo, offset, SEEK_SET);
+}
+
 Archivo::~Archivo() {
-    ptrArchivo.close();
+    fclose(this->ptrArchivo);
     std::cout << "Hola Destructor de archivo!";
 }
 //--------------------CLASE ARCHIVO----------------------------------//
@@ -110,6 +104,14 @@ int ControlaArchivo::descartarPrimerasNFilas(int cant_filas_a_descartar) {
                 this->archivo.leerNBytes(aux, DOS_BYTES*sizeof(uint8_t));
             }
         }*/
+}
+
+int ControlaArchivo::cargarFilasSegunInfo(std::list<Fila>& filas,
+                                          InfoParticion& info) {
+    int offset_inicial = info.nro_indice_inicial*this->nro_columnas*DOS_BYTES;
+    this->archivo.setearOffset(offset_inicial);
+    return cargarHastaNFilas(filas, info.nro_indice_final -
+                                        info.nro_indice_inicial);
 }
 
 int ControlaArchivo::cargarHastaNFilas(std::list<Fila>& filas,

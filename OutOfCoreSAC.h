@@ -4,6 +4,8 @@
 #include "ControlaArchivo.h"
 #include "ManejaParticiones.h"
 #include "ThreadSafeQueue.h"
+#include <memory>
+#include "ResultadosParciales.h"
 #include <list>
 
 class OutOfCoreSAC {
@@ -39,7 +41,10 @@ private:
 
     int hacerOperacionEnHiloMain();
 
-    void cargarTodasLasTareas(ThreadSafeQueue& cola);
+    void cargarTodasLasTareas(ThreadSafeQueue& cola,
+                   std::list<std::shared_ptr<ResultadosParciales>>& resultados);
+
+    void ejecutarTareas(ThreadSafeQueue& cola);
 
     void ejecutarOperacionSobreParticiones(int nro_columna, std::string op,
                                            int cant_particiones);
