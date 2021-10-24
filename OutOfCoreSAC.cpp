@@ -1,7 +1,7 @@
 #include "OutOfCoreSAC.h"
 #include "RecibeInstrucciones.h"
-#include <iostream>
-#include <memory>
+#include <string>
+#include <utility>
 #include "ThreadSafeQueue.h"
 #include "ResultadosParciales.h"
 #define ERROR -1
@@ -12,15 +12,13 @@ OutOfCoreSAC::OutOfCoreSAC(const char* path_al_archivo, int nro_columnas,
                             int nro_hilos)
                             :controla_archivo(path_al_archivo, nro_columnas),
                             cant_hilos(nro_hilos) {
-
 }
-
+/*
 void OutOfCoreSAC::ejecutarOperacionSobreParticiones(int nro_columna,
                                                       std::string op,
                                                       int cant_particiones) {
-
-}
-
+}*/
+/*
 int OutOfCoreSAC::cargarFilasDisponibles(std::list<Fila>& filas,
                                          int filas_restantes, int max_filas) {
     int filas_a_cargar;
@@ -29,7 +27,7 @@ int OutOfCoreSAC::cargarFilasDisponibles(std::list<Fila>& filas,
     else
         filas_a_cargar = filas_restantes;
     return this->controla_archivo.cargarHastaNFilas(filas, filas_a_cargar);
-}
+}*/
 
 void OutOfCoreSAC::cargarTodasLasTareas(ThreadSafeQueue& cola,
                  std::list<std::shared_ptr<ResultadosParciales>>& resultados) {
@@ -94,9 +92,9 @@ int OutOfCoreSAC::hacerOperacionEnHiloMain() {
 }
 
 int OutOfCoreSAC::hacerOperacion() {
-    if (this->cant_hilos == 0) //solo el hilo main
+   // if (this->cant_hilos == 0) //solo el hilo main
         return this->hacerOperacionEnHiloMain();
-    return 0;
+   // return 0;
 }
 
 /*
@@ -149,9 +147,5 @@ int OutOfCoreSAC::hacerOperacion() {
     }
     return EXITO;
 }*/
-
-
-
 OutOfCoreSAC::~OutOfCoreSAC() {
-
 }

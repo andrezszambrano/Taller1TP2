@@ -1,7 +1,8 @@
 #include "ThreadSafeQueue.h"
 #include "ManejaParticiones.h"
-ThreadSafeQueue::ThreadSafeQueue() {
+#include <utility>
 
+ThreadSafeQueue::ThreadSafeQueue() {
 }
 
 void ThreadSafeQueue::push(InfoParticion&& info) {
@@ -14,7 +15,5 @@ void ThreadSafeQueue::pop(InfoParticion& info) {
 }
 
 ThreadSafeQueue::~ThreadSafeQueue() {
-
-
 }
 

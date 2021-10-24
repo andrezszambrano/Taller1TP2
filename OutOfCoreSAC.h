@@ -7,9 +7,9 @@
 #include <memory>
 #include "ResultadosParciales.h"
 #include <list>
+#include <string>
 
 class OutOfCoreSAC {
-
 private:
     ControlaArchivo controla_archivo;
     int cant_hilos;
@@ -36,19 +36,17 @@ private:
     //pueden cargar, y se intentan cargar como máximo N filas, N siendo el
     //número menor de estos. Si hay algún error en el formato del dataset se
     //retorna -1. Se retorna la cantidad cargada de filas: un número entre 0 y N
-    int cargarFilasDisponibles(std::list<Fila>& filas, int filas_restantes,
-                                int max_filas);
+   // int cargarFilasDisponibles(std::list<Fila>& filas, int filas_restantes,
+     //                           int max_filas);
 
     int hacerOperacionEnHiloMain();
 
     void cargarTodasLasTareas(ThreadSafeQueue& cola,
                    std::list<std::shared_ptr<ResultadosParciales>>& resultados);
 
+  //  void ejecutarOperacionSobreParticiones(int nro_columna, std::string op,
+    //                                       int cant_particiones);
     void ejecutarTareas(ThreadSafeQueue& cola);
-
-    void ejecutarOperacionSobreParticiones(int nro_columna, std::string op,
-                                           int cant_particiones);
-
 };
 
 

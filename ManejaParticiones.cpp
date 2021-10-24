@@ -1,15 +1,15 @@
 #include "ManejaParticiones.h"
-
+#include <utility>
+#include <algorithm>
+#include <numeric>
 #define EXITO 0
 
 Fila::Fila(): cant_columnas(0) {
-
 }
 
 Fila::Fila(Fila&& otraFila)
         :nums_fila(std::move(otraFila.nums_fila)),
          cant_columnas(otraFila.cant_columnas) {
-
 }
 
 void Fila::aniadirNumero(uint16_t num) {
@@ -22,22 +22,20 @@ int Fila::getColumna(int nro_columna) const{
 }
 
 Fila::~Fila() {
-
 }
 
 
-Particion::Particion() {
-
+Particion::Particion()
+            :cant_filas(0) {
 }
 
 Particion::Particion(std::list<Fila>&& filas, int cant_filas)
         :filas(std::move(filas)), cant_filas(cant_filas){
-
 }
 
 Particion::Particion(Particion&& otraParticion)
-        :filas(std::move(otraParticion.filas)) {
-
+        :filas(std::move(otraParticion.filas)),
+         cant_filas(otraParticion.cant_filas) {
 }
 
 void Particion::operarFilas(std::shared_ptr<ResultadosParciales>&&
@@ -63,25 +61,28 @@ int Particion::generarParticiones(std::list<Particion>& particiones,
    }
     return EXITO;
 }*/
-
+/*
 void Particion::aniadirFila(Fila&& fila){
     this->filas.push_back(std::move(fila));
-}
-Particion::~Particion() {
+}*/
 
+Particion::~Particion() {
 }
 
 int sum(std::list<Fila>& filas, int nro_columna) {
+    std::list<Fila>::iterator it;
     int suma = 0;
-    for (auto const& fila : filas)
-        suma = suma + fila.getColumna(nro_columna);
+    for (it = filas.begin(); it != filas.end(); ++it){
+        suma = suma + it->getColumna(nro_columna);
+    }
     return suma;
 }
 
 int max(std::list<Fila>& filas, int nro_columna) {
+    std::list<Fila>::iterator it;
     int max = filas.front().getColumna(nro_columna);
-    for (auto const& fila : filas) {
-        int aux = fila.getColumna(nro_columna);
+    for (it = filas.begin(); it != filas.end(); ++it){
+        int aux = it->getColumna(nro_columna);
         if (aux > max)
             max = aux;
     }
@@ -89,9 +90,10 @@ int max(std::list<Fila>& filas, int nro_columna) {
 }
 
 int min(std::list<Fila>& filas, int nro_columna) {
-    int min = filas.front().getColumna((nro_columna));
-    for (auto const& fila : filas) {
-        int aux = fila.getColumna(nro_columna);
+    std::list<Fila>::iterator it;
+    int min = filas.front().getColumna(nro_columna);
+    for (it = filas.begin(); it != filas.end(); ++it){
+        int aux = it->getColumna(nro_columna);
         if (aux < min)
             min = aux;
     }
@@ -101,24 +103,21 @@ int min(std::list<Fila>& filas, int nro_columna) {
 MapaDeFunciones::MapaDeFunciones()
                 :map({{"sum", sum}, {"max", max}, {"min", min},
                               {"mean", sum}}) {
-
 }
 
-int MapaDeFunciones::operar(std::list<Fila>& filas, std::string op,
+int MapaDeFunciones::operar(std::list<Fila>& filas, const std::string& op,
                             int nro_columna) {
     return (this->map[op](filas, nro_columna));
 }
 
 MapaDeFunciones::~MapaDeFunciones() {
-
 }
 InfoParticion::InfoParticion() {
-
 }
 
 InfoParticion::InfoParticion(std::shared_ptr<ResultadosParciales> ptr,
                              int fila_inicial, int fila_final, int nro_columna,
-                             int nro_filas_por_particion, std::string op)
+                             int nro_filas_por_particion, const std::string& op)
               :resultados_parciales(ptr), nro_indice_inicial(fila_inicial),
                nro_columna(nro_columna), operacion(op){
     if (fila_final < fila_inicial + nro_filas_por_particion)
@@ -154,5 +153,4 @@ InfoParticion& InfoParticion::operator=(const InfoParticion& otro) {
 }
 
 InfoParticion::~InfoParticion() {
-
 }

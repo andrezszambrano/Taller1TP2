@@ -11,7 +11,6 @@
 #define MAX_COLUMNAS 10
 
 class Fila {
-
 private:
     std::array<uint16_t, MAX_COLUMNAS> nums_fila;
     int cant_columnas;
@@ -24,7 +23,6 @@ public:
 };
 
 class Particion {
-
 private:
     std::list<Fila> filas;
     int cant_filas;
@@ -38,7 +36,7 @@ public:
     Particion(const Particion& otroMF) = delete;
     Particion(Particion&& otraParticion);
    // ejecutarOperacion(int nro_columna, std::string operacion, particiones)
-    void aniadirFila(Fila&& fila);
+    //void aniadirFila(Fila&& fila);
     ~Particion();
 };
 
@@ -48,12 +46,11 @@ private:
 
 public:
     MapaDeFunciones();
-    int operar(std::list<Fila>& filas, std::string op, int nro_columna);
+    int operar(std::list<Fila>& filas, const std::string& op, int nro_columna);
     ~MapaDeFunciones();
 };
 
 class InfoParticion {
-
 public:
     std::shared_ptr<ResultadosParciales> resultados_parciales;
     int nro_indice_inicial;
@@ -65,13 +62,11 @@ public:
     InfoParticion();
     InfoParticion(std::shared_ptr<ResultadosParciales> ptr, int fila_inicial,
                   int fila_final, int nro_columna, int nro_filas_por_particion,
-                  std::string op);
+                  const std::string& op);
     InfoParticion(InfoParticion&& otro);
     bool finDeParticiones();
     InfoParticion& operator=(const InfoParticion& otro);
     ~InfoParticion();
 };
-
-
 
 #endif //TP2FINAL_MANEJAPARTICIONES_H

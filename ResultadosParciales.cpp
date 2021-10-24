@@ -1,16 +1,9 @@
 #include "ResultadosParciales.h"
 #include <iostream>
-ListaResultadosParciales::ListaResultadosParciales() {
-
-}
-
-ListaResultadosParciales::~ListaResultadosParciales() {
-
-}
-
+#include <string>
 
 void ResultadosParciales::crear(std::shared_ptr<ResultadosParciales>& ptr,
-                                std::string op) {
+                                const std::string& op) {
     if (op == "sum")
         ptr = std::make_shared<ResultadosParcialesSuma>();
     else if (op == "min")
@@ -90,7 +83,6 @@ void ResultadosParcialesMax::imprimirResultado() {
 
 ResultadosParcialesMean::ResultadosParcialesMean()
                         :nro_filas(0){
-
 }
 
 void ResultadosParcialesMean::guardarResultado(int resultado, int cant_filas) {

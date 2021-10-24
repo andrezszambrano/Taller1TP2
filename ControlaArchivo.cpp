@@ -1,7 +1,7 @@
 #include "ControlaArchivo.h"
 #include "ManejaParticiones.h"
 #include <iostream>
-
+#include <utility>
 #include <stdint.h>
 #include <arpa/inet.h>
 #include <cstdio>
@@ -17,22 +17,33 @@
 #define PARTICION_INVALIDA 3
 //--------------------CLASE ARCHIVO----------------------------------//
 Archivo::Archivo(const char* path_al_archivo) {
-    this->ptrArchivo = fopen(path_al_archivo, "rb");
-    if (!ptrArchivo)
+    this->ptr_archivo = fopen(path_al_archivo, "rb");
+    if (!ptr_archivo)
            throw std::runtime_error("El archivo no existe.");
 }
 
+//Archivo::Archivo(Archivo& otro_archivo) {//Para que cppcheck no se queje
+  //  this->ptr_archivo = otro_archivo.ptr_archivo;
+//}
+
+Archivo& Archivo::operator=(const Archivo& otro_archivo) {
+    if (this != &otro_archivo) {
+        this->ptr_archivo = otro_archivo.ptr_archivo;
+    }
+    return *this;
+}
+
 int Archivo::leerNBytes(char* buf, int cant_bytes) {
-    int leidos = fread(buf, 1, cant_bytes, this->ptrArchivo);
+    int leidos = fread(buf, 1, cant_bytes, this->ptr_archivo);
     return leidos;
 }
 
 int Archivo::setearOffset(int offset) {
-    return std::fseek(this->ptrArchivo, offset, SEEK_SET);
+    return std::fseek(this->ptr_archivo, offset, SEEK_SET);
 }
 
 Archivo::~Archivo() {
-    fclose(this->ptrArchivo);
+    fclose(this->ptr_archivo);
 }
 //--------------------CLASE ARCHIVO----------------------------------//
 
@@ -40,7 +51,6 @@ Archivo::~Archivo() {
 
 ControlaArchivo::ControlaArchivo(const char* pathAlArchivo, int nro_columnas)
                 :archivo(pathAlArchivo), nro_columnas(nro_columnas) {
-
 }
 
 int ControlaArchivo::cargarFila(Fila& fila) {
@@ -82,7 +92,7 @@ int ControlaArchivo::cargarParticion(ManejaFilas& particion,
     }
     return EXITO;
 }
-*/
+*//*
 int ControlaArchivo::descartarPrimerasNFilas(int cant_filas_a_descartar) {
     std::list<Fila> filas_a_descartar;
     int aux = this->cargarHastaNFilas(filas_a_descartar,
@@ -96,17 +106,16 @@ int ControlaArchivo::descartarPrimerasNFilas(int cant_filas_a_descartar) {
     } else{
         return EXITO;
     }
-
-    /*for (int i = 0; i < cant_filas_a_descartar; i++){
+    for (int i = 0; i < cant_filas_a_descartar; i++){
         for (int j = 0; j < this->nro_columnas; j++){
                 char aux[2];
                 this->archivo.leerNBytes(aux, DOS_BYTES*sizeof(uint8_t));
             }
-        }*/
-}
+        }
+}*/
 
 int ControlaArchivo::cargarFilasSegunInfo(std::list<Fila>& filas,
-                                          InfoParticion& info) {
+                                          const InfoParticion& info) {
     int offset_inicial = info.nro_indice_inicial*this->nro_columnas*DOS_BYTES;
     this->archivo.setearOffset(offset_inicial);
     return cargarHastaNFilas(filas, info.nro_indice_final -
@@ -130,7 +139,6 @@ int ControlaArchivo::cargarHastaNFilas(std::list<Fila>& filas,
 }
 
 ControlaArchivo::~ControlaArchivo(){
-
 }
 
 

@@ -7,14 +7,17 @@
 #include "RecibeInstrucciones.h"
 
 class Archivo {
-
 private:
-    FILE* ptrArchivo;
+    FILE* ptr_archivo;
 
 public:
+    Archivo();
+    Archivo(const Archivo& otro_archivo) = delete;
+    Archivo(Archivo&& otro_archivo);
+    Archivo& operator=(const Archivo& otro_archivo);
     //Crea un archivo con su puntero al archivo dado por el path. En caso de que
     //el archivo no exista se imprime en stderr y se lanza una excepción.
-    Archivo(const char* pathAlArchivo);
+    explicit Archivo(const char* path_al_archivo);
 
     //Se leen hasta cant_bytes del archivo, almacenandolos en el buffer. Se
     //retorna la cantidad de bytes leidos: si el archivo ya había tenía el flag
@@ -30,7 +33,6 @@ public:
 };
 
 class ControlaArchivo {
-
 private:
     Archivo archivo;
     int nro_columnas;
@@ -46,7 +48,7 @@ public:
     //(tiene filas incompletas o números de un byte), o si el dataset no tiene
     //la cantidad de filas que se quieren descartar, se retorna -1 y se imprime
     //en stderr. en otro caso se retorna 0.
-    int descartarPrimerasNFilas(int cant_filas_a_descartar);
+   // int descartarPrimerasNFilas(int cant_filas_a_descartar);
 
     //Se cargan hasta cant_filas_a_cargar filas en la lista de filas recibida
     //por referencia. En caso de error en el dataset (filas incompletas o
@@ -56,7 +58,7 @@ public:
     int cargarHastaNFilas(std::list<Fila>& filas, int cant_filas_a_cargar);
 
     int cargarFilasSegunInfo(std::list<Fila>& filas,
-                                              InfoParticion& info);
+                                              const InfoParticion& info);
 
     //Se liberan los recursos acorde.
     ~ControlaArchivo();
