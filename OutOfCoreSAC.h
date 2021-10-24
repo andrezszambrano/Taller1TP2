@@ -3,6 +3,7 @@
 
 #include "ControlaArchivo.h"
 #include "ManejaParticiones.h"
+#include "ThreadSafeQueue.h"
 #include <list>
 
 class OutOfCoreSAC {
@@ -35,6 +36,10 @@ private:
     //retorna -1. Se retorna la cantidad cargada de filas: un número entre 0 y N
     int cargarFilasDisponibles(std::list<Fila>& filas, int filas_restantes,
                                 int max_filas);
+
+    int hacerOperacionEnHiloMain();
+
+    void cargarTodasLasTareas(ThreadSafeQueue& cola);
 
     void ejecutarOperacionSobreParticiones(int nro_columna, std::string op,
                                            int cant_particiones);

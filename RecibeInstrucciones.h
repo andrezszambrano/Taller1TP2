@@ -10,6 +10,6 @@ typedef struct Instrucciones{
     std::string operacion;
 }Instrucciones;
 
-void recibirInstruccion(Instrucciones* instruc);
+int recibirInstruccion(Instrucciones* instruc);
 
 #endif //TUTORIAL_RECIBEINSTRUCCIONES_H
