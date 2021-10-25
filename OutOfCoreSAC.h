@@ -30,7 +30,6 @@ public:
     ~OutOfCoreSAC();
 
 private:
-
     //Función que carga las particiones según las instrucciones recibidas,
     //ejecuta las tareas y termina juntando todos los resultados. En caso de que
     //el dataset no tenga un formato válido (filas incompletas o números
@@ -53,6 +52,12 @@ private:
     //objeto apuntado por el ptr resultados_parciales. En caso de que el dataset
     //no tenga un formato válido (filas incompletas o números entrecortados)
     void ejecutarTareas(ThreadSafeQueue& cola);
+
+    //Carga las filas dada por info, crea la partición correspondiente y ejecuta
+    //la tarea correspondiente. El resultado parcial se guarda en el objeto
+    //apuntado por el ptr resultados_parciales. En caso de que el dataset
+    //no tenga un formato válido (filas incompletas o números entrecortados)
+    void cargarParticionYEjecutarTarea(InfoParticion& info);
 };
 
 #endif //TP2FINAL_OUTOFCORESAC_H

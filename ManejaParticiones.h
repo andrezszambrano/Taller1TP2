@@ -72,7 +72,6 @@ private:
     std::map<std::string, std::function<int(std::list<Fila>&, int)>> map;
 
 public:
-
     //Se crea el objeto inicializado.
     MapaDeFunciones();
 

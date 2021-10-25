@@ -14,6 +14,28 @@ OutOfCoreSAC::OutOfCoreSAC(const char* path_al_archivo, int nro_columnas,
                             cant_hilos(nro_hilos) {
 }
 
+void generarYCargarToken(ThreadSafeQueue& cola) {
+    InfoParticion info;
+    InfoParticion::crearToken(info);
+    cola.push(std::move(info));
+}
+
+void cargarPunteroAResultadoParcialYCargarInfoParticiones(ThreadSafeQueue& cola,
+                std::list<std::shared_ptr<ResultadosParciales>>& resultados,
+                const Instrucciones& instruc) {
+    std::shared_ptr<ResultadosParciales> ptr;
+    ResultadosParciales::crear(ptr, instruc.operacion);
+    resultados.push_back(ptr);
+    for (int fila_inicial = instruc.fila_inicial;
+         fila_inicial < instruc.fila_final;
+         fila_inicial = fila_inicial + instruc.nro_filas_por_particion) {
+        InfoParticion info(ptr, fila_inicial, instruc.fila_final,
+                           instruc.nro_columna, instruc.nro_filas_por_particion,
+                           instruc.operacion);
+        cola.push(std::move(info));
+    }
+}
+
 void OutOfCoreSAC::cargarTodasLasTareas(ThreadSafeQueue& cola,
                  std::list<std::shared_ptr<ResultadosParciales>>& resultados) {
     bool hay_tareas = true;
@@ -21,25 +43,22 @@ void OutOfCoreSAC::cargarTodasLasTareas(ThreadSafeQueue& cola,
         Instrucciones instruc;
         int aux = recibirInstruccion(&instruc,
                                      this->controla_archivo.getNroColumnas());
-        if (aux == SIN_INSTRUCCIONES) {
+        if (aux == SIN_INSTRUCCIONES)
             hay_tareas = false;
-        } else {
-           std::shared_ptr<ResultadosParciales> ptr;
-           ResultadosParciales::crear(ptr, instruc.operacion);
-           resultados.push_back(ptr);
-           for (int fila_inicial = instruc.fila_inicial;
-                fila_inicial < instruc.fila_final;
-                fila_inicial = fila_inicial + instruc.nro_filas_por_particion) {
-               InfoParticion info(ptr, fila_inicial, instruc.fila_final,
-                          instruc.nro_columna, instruc.nro_filas_por_particion,
-                          instruc.operacion);
-               cola.push(std::move(info));
-           }
-        }
+        else
+            cargarPunteroAResultadoParcialYCargarInfoParticiones(cola,
+                                                                 resultados,
+                                                                 instruc);
     }
-    InfoParticion info;
-    InfoParticion::crearToken(info);
-    cola.push(std::move(info));
+    generarYCargarToken(cola);
+}
+
+void OutOfCoreSAC::cargarParticionYEjecutarTarea(InfoParticion& info) {
+    std::list<Fila> filas;
+    this->controla_archivo.cargarFilasSegunInfo(filas, info);
+    Particion particion(std::move(filas), filas.size());
+    particion.operarFilas(std::move(info.resultados_parciales),
+                          info.nro_columna, info.operacion);
 }
 
 void OutOfCoreSAC::ejecutarTareas(ThreadSafeQueue& cola) {
@@ -47,15 +66,10 @@ void OutOfCoreSAC::ejecutarTareas(ThreadSafeQueue& cola) {
     while (iterar) {
         InfoParticion info;
         cola.pop(info);
-        if (info.finDeParticiones()) {
+        if (info.finDeParticiones())
             iterar = false;
-        } else {
-            std::list<Fila> filas;
-            this->controla_archivo.cargarFilasSegunInfo(filas, info);
-            Particion particion(std::move(filas), filas.size());
-            particion.operarFilas(std::move(info.resultados_parciales),
-                                  info.nro_columna, info.operacion);
-        }
+        else
+            this->cargarParticionYEjecutarTarea(info);
     }
 }
 

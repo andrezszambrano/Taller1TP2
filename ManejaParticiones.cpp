@@ -105,7 +105,8 @@ MapaDeFunciones::~MapaDeFunciones() {
 
 //-------------------CLASE INFO PARTICION----------------------------------//
 InfoParticion::InfoParticion()
-                :resultados_parciales(NULL) {
+                :resultados_parciales(NULL), nro_indice_inicial(0),
+                nro_indice_final(0), nro_columna(0) {
 }
 
 InfoParticion::InfoParticion(std::shared_ptr<ResultadosParciales> ptr,
