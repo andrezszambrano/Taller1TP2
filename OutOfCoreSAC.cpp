@@ -37,7 +37,8 @@ void OutOfCoreSAC::cargarTodasLasTareas(ThreadSafeQueue& cola,
            }
         }
     }
-    InfoParticion info(NULL, 0, 0, 0, 0, "hola");
+    InfoParticion info;
+    InfoParticion::crearToken(info);
     cola.push(std::move(info));
 }
 
@@ -67,19 +68,18 @@ void juntarResultadosParcialesYMostrar(
     }
 }
 
-int OutOfCoreSAC::hacerOperacionEnHiloMain() {
+void OutOfCoreSAC::hacerOperacionEnHiloMain() {
     //Como no se tendrán threads, cargo todas las particiones de una vez
     std::list<std::shared_ptr<ResultadosParciales>> resultados;
     ThreadSafeQueue cola;
     this->cargarTodasLasTareas(cola, resultados);
     this->ejecutarTareas(cola);
     juntarResultadosParcialesYMostrar(resultados);
-    return EXITO;
 }
 
-int OutOfCoreSAC::hacerOperacion() {
+void OutOfCoreSAC::hacerOperaciones() {
    // if (this->cant_hilos == 0) //solo el hilo main
-        return this->hacerOperacionEnHiloMain();
+        this->hacerOperacionEnHiloMain();
    // return 0;
 }
 

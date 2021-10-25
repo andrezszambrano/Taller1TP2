@@ -21,25 +21,38 @@ public:
     OutOfCoreSAC(const char* path_al_archivo, int nro_columnas, int nro_hilos);
 
     //Pide una serie de instrucciones por stdin, y opera acorde. En caso de que
-    //el dataset no tenga un formato válido (filas o números entrecortados), se
-    //retorna -1 y se imprime en stderr. Si se pide leer más filas de las que
-    //están disponibles en el dataset se devuelve también -1 y se imprime en
-    //stderr. Si se piden leer a partir de x fila, y solo hay w filas (x > w)
-    //se retorna -1 y se imprime en stderr. En caso de éxito se retorna 0.
-    int hacerOperacion();
+    //el dataset no tenga un formato válido (filas o números entrecortados), o
+    //que alguna instrucción no sea válida, se lanza una runtime exception con
+    //un mensaje acorde.
+    void hacerOperaciones();
 
     //Libera los recursos del OutOfCoreSAC acorde.
     ~OutOfCoreSAC();
 
 private:
 
-    int hacerOperacionEnHiloMain();
+    //Función que carga las particiones según las instrucciones recibidas,
+    //ejecuta las tareas y termina juntando todos los resultados. En caso de que
+    //el dataset no tenga un formato válido (filas incompletas o números
+    //entrecortados), o que alguna instrucción no sea válida, se lanza una
+    //runtime exception con un mensaje acorde.
+    void hacerOperacionEnHiloMain();
 
+    //Carga todas las tareas recibidas por stdin en una cola thread safe. Por
+    //cada tarea, se crea en el heap usando punteros inteligentes compartidos
+    //un objeto del tipo ResultadoParcial acorde con la operación requerida por
+    //la instrucción recibida cargando dicho puntero a la lista de resultados
+    //parciales. En caso de que alguna instrucción leída por stdin sea
+    //incorrecta, se lanza una runtime exception con un mensaje acorde.
     void cargarTodasLasTareas(ThreadSafeQueue& cola,
                    std::list<std::shared_ptr<ResultadosParciales>>& resultados);
 
+    //Se sacan tareas de la thread safe cola. Por cada tarea, se cargan las
+    //filas requeridas, se crea la partición correspondiente, y se opera acorde
+    //la información sacada de la cola. El resultado parcial se guarda en el
+    //objeto apuntado por el ptr resultados_parciales. En caso de que el dataset
+    //no tenga un formato válido (filas incompletas o números entrecortados)
     void ejecutarTareas(ThreadSafeQueue& cola);
 };
-
 
 #endif //TP2FINAL_OUTOFCORESAC_H

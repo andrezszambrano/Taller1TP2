@@ -12,20 +12,24 @@ private:
 
 public:
     Archivo();
+
     Archivo(const Archivo& otro_archivo) = delete;
-    Archivo(Archivo&& otro_archivo);
+
+    //Archivo(Archivo&& otro_archivo);
+
     Archivo& operator=(const Archivo& otro_archivo);
+
     //Crea un archivo con su puntero al archivo dado por el path. En caso de que
     //el archivo no exista se imprime en stderr y se lanza una excepción.
     explicit Archivo(const char* path_al_archivo);
 
     //Se leen hasta cant_bytes del archivo, almacenandolos en el buffer. Se
-    //retorna la cantidad de bytes leidos: si el archivo ya había tenía el flag
-    //EOF se avisa por stderr y se retorna 0, o si al intentar leer se activa
-    //dicho flag, se retorna 0, en otro caso se retorna la cantidad de bytes
-    //leidos.
+    //retorna la cantidad de bytes leidos: si dicha cantidad es menor a
+    //cant_bytes, se terminó el archivo.
     int leerNBytes(char* buf, int cant_bytes);
 
+    //Setea el offset que tiene el puntero al archivo respecto al comienzo del
+    //archivo.
     int setearOffset(int offset);
 
     //Se destruye el archivo liberando sus recursos acorde.
@@ -41,23 +45,13 @@ public:
     //Crea un ControlaArchivo reservando todos sus recursos, recibiendo el path
     //al archivo que se quiere abrir y la cantidad de columnas que tiene cada
     //fila. En caso de que no se pueda abrir el archivo, se retorna una
-    // excepción.
+    //run time excepción con mensaje.
     ControlaArchivo(const char* pathAlArchivo, int nro_columnas);
 
-    //Descarta las primeras N filas. Si el formato del dataset no es correcto
-    //(tiene filas incompletas o números de un byte), o si el dataset no tiene
-    //la cantidad de filas que se quieren descartar, se retorna -1 y se imprime
-    //en stderr. en otro caso se retorna 0.
-   // int descartarPrimerasNFilas(int cant_filas_a_descartar);
-
-    //Se cargan hasta cant_filas_a_cargar filas en la lista de filas recibida
-    //por referencia. En caso de error en el dataset (filas incompletas o
-    //números de un byte) se retorna error y se imprime en stderr. En otro caso
-    //se retorna la cantidad de filas que se pudieron cargar, un número entre 0
-    //y cant_filas_a_cargar.
-    int cargarHastaNFilas(std::list<Fila>& filas, int cant_filas_a_cargar);
-
-    int cargarFilasSegunInfo(std::list<Fila>& filas,
+    //Carga la lista de filas recibidas por referencia según la información
+    //recibida. Si hay algún error en el formato del dataset (filas incompletas
+    //o números de un byte) se lanza una runtime exception con un mensaje.
+    void cargarFilasSegunInfo(std::list<Fila>& filas,
                                               const InfoParticion& info);
     int getNroColumnas();
     //Se liberan los recursos acorde.
@@ -69,11 +63,17 @@ private:
     //el archivo ya terminó y se retorna 1. Si en alguna otra iteración se
     //cargan 0 bytes, el archivo terminó, sin embargo la fila no está cargada
     //correctamente, lo cual significa que el número dado de columnas no es
-    //correcto para el dataset, por lo tanto se imprime en stderr y se retorna
-    //-1. Si en vez de cargar 2 bytes para un número solo se carga 1 byte,
-    //significa que terminó el archivo leyendo un número de solo 1 byte, por lo
-    //que se imprime en stderr y se retorna -1. En caso de éxito se retorna 0.
+    //correcto para el dataset, por lo tanto se lanza una runtime exception con
+    //mensaje explicativo. Si en vez de cargar 2 bytes para un número solo se
+    // carga 1 byte, significa que terminó el archivo leyendo un número de solo
+    // 1 byte, por lo que también se lanza una runtime exception con otro
+    // mensaje. En caso de éxito se retorna 0.
     int cargarFila(Fila& fila);
+
+    //Se cargan hasta cant_filas_a_cargar filas en la lista de filas recibida
+    //por referencia. En caso de error en el dataset (filas incompletas o
+    //números de un byte) se lanza una runtime exception con mensaje de error.
+    void cargarHastaNFilas(std::list<Fila>& filas, int cant_filas_a_cargar);
 };
 
 

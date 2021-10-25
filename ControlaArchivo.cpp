@@ -57,45 +57,40 @@ int ControlaArchivo::cargarFila(Fila& fila) {
         int aux = this->archivo.leerNBytes(reinterpret_cast<char*>
                                            (&numBE),
                                            sizeof(numBE));
-        if (aux == UN_BYTE){
-            std::cerr << "Cada número debe estar compuesto por dos bytes."
-                         "Revise su dataset.";
-            return ERROR;
-        } else if (aux == CERO_BYTES && i > 0){
-            std::cerr << "La cantidad de números totales en el dataset no es"
-                         "múltiplo de la cantidad de columnas pedidas.";
-            return ERROR;
-        } else if (aux == CERO_BYTES){
+        if (aux == UN_BYTE)
+            throw std::runtime_error("Error: cada número debe estar compuesto "
+                                     "por dos bytes. Revise su dataset.");
+        else if (aux == CERO_BYTES && i > 0)
+            throw std::runtime_error("Error: La cantidad de números totales en "
+                                     "el dataset no es múltiplo de la cantidad "
+                                     "de columnas pedidas.");
+        else if (aux == CERO_BYTES)
             return FIN_DEL_ARCHIVO;
-        }
         uint16_t num = ntohs(numBE);
         fila.aniadirNumero(num);
     }
     return EXITO;
 }
 
-int ControlaArchivo::cargarFilasSegunInfo(std::list<Fila>& filas,
+void ControlaArchivo::cargarFilasSegunInfo(std::list<Fila>& filas,
                                           const InfoParticion& info) {
     int offset_inicial = info.nro_indice_inicial*this->nro_columnas*DOS_BYTES;
     this->archivo.setearOffset(offset_inicial);
-    return cargarHastaNFilas(filas, info.nro_indice_final -
+    cargarHastaNFilas(filas, info.nro_indice_final -
                                         info.nro_indice_inicial);
 }
 
-int ControlaArchivo::cargarHastaNFilas(std::list<Fila>& filas,
+void ControlaArchivo::cargarHastaNFilas(std::list<Fila>& filas,
                                    int cant_filas_a_cargar) {
     int filas_cargadas = 0;
     while (filas_cargadas < cant_filas_a_cargar){
         Fila fila_aux;
         int aux = this->cargarFila(fila_aux);
-        if (aux == ERROR)
-            return ERROR;
-        else if (aux == FIN_DEL_ARCHIVO)
-            return filas_cargadas;
+        if (aux == FIN_DEL_ARCHIVO)
+            return;
         filas.push_back(std::move(fila_aux));
         filas_cargadas++;
     }
-    return filas_cargadas;
 }
 
 int ControlaArchivo::getNroColumnas(){

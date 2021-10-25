@@ -4,6 +4,7 @@
 #include <numeric>
 #define EXITO 0
 
+//--------------------CLASE FILA----------------------------------//
 Fila::Fila(): cant_columnas(0) {
 }
 
@@ -24,6 +25,9 @@ int Fila::getColumna(int nro_columna) const{
 Fila::~Fila() {
 }
 
+//--------------------CLASE FILA----------------------------------//
+
+//--------------------CLASE PARTICION----------------------------------//
 
 Particion::Particion()
             :cant_filas(0) {
@@ -40,17 +44,21 @@ Particion::Particion(Particion&& otraParticion)
 
 void Particion::operarFilas(std::shared_ptr<ResultadosParciales>&&
                             resultados_parciales, int nro_columna,
-                            std::string op) {
+                            const std::string& op) {
     MapaDeFunciones mapa;
-    int resultado = mapa.operar(filas, op, nro_columna);
+    int resultado = mapa.operar(this->filas, op, nro_columna);
     resultados_parciales->guardarResultado(resultado, this->cant_filas);
 }
 
 Particion::~Particion() {
 }
 
-int sum(std::list<Fila>& filas, int nro_columna) {
-    std::list<Fila>::iterator it;
+//--------------------CLASE PARTICION----------------------------------//
+
+//-------------------CLASE MAPA DE FUNCIONES----------------------------------//
+
+int sum(const std::list<Fila>& filas, int nro_columna) {
+    std::list<Fila>::const_iterator it;
     int suma = 0;
     for (it = filas.begin(); it != filas.end(); ++it){
         suma = suma + it->getColumna(nro_columna);
@@ -58,8 +66,8 @@ int sum(std::list<Fila>& filas, int nro_columna) {
     return suma;
 }
 
-int max(std::list<Fila>& filas, int nro_columna) {
-    std::list<Fila>::iterator it;
+int max(const std::list<Fila>& filas, int nro_columna) {
+    std::list<Fila>::const_iterator it;
     int max = filas.front().getColumna(nro_columna);
     for (it = filas.begin(); it != filas.end(); ++it){
         int aux = it->getColumna(nro_columna);
@@ -69,8 +77,8 @@ int max(std::list<Fila>& filas, int nro_columna) {
     return max;
 }
 
-int min(std::list<Fila>& filas, int nro_columna) {
-    std::list<Fila>::iterator it;
+int min(const std::list<Fila>& filas, int nro_columna) {
+    std::list<Fila>::const_iterator it;
     int min = filas.front().getColumna(nro_columna);
     for (it = filas.begin(); it != filas.end(); ++it){
         int aux = it->getColumna(nro_columna);
@@ -92,7 +100,12 @@ int MapaDeFunciones::operar(std::list<Fila>& filas, const std::string& op,
 
 MapaDeFunciones::~MapaDeFunciones() {
 }
-InfoParticion::InfoParticion() {
+
+//-------------------CLASE MAPA DE FUNCIONES----------------------------------//
+
+//-------------------CLASE INFO PARTICION----------------------------------//
+InfoParticion::InfoParticion()
+                :resultados_parciales(NULL) {
 }
 
 InfoParticion::InfoParticion(std::shared_ptr<ResultadosParciales> ptr,
@@ -104,6 +117,12 @@ InfoParticion::InfoParticion(std::shared_ptr<ResultadosParciales> ptr,
         this->nro_indice_final = fila_final;
     else
         this->nro_indice_final = fila_inicial + nro_filas_por_particion;
+}
+
+void InfoParticion::crearToken(InfoParticion& info) {
+    info.nro_indice_inicial = 0;
+    info.nro_indice_final = 0;
+    info.nro_columna = 0;
 }
 
 InfoParticion::InfoParticion(InfoParticion&& otro) {
@@ -134,3 +153,5 @@ InfoParticion& InfoParticion::operator=(const InfoParticion& otro) {
 
 InfoParticion::~InfoParticion() {
 }
+
+//-------------------CLASE INFO PARTICION----------------------------------//
