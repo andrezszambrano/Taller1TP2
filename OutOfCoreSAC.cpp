@@ -20,17 +20,25 @@ OutOfCoreSAC::OutOfCoreSAC(const char* path_al_archivo, int nro_columnas,
         throw std::runtime_error("Error: el archivo no existe.");
 }
 
+//Se genera y se carga a la thread safe cola un token que significa que no se
+//va a agregar más nada a la thread safe cola.
 void generarYCargarToken(ThreadSafeQueue& cola) {
     InfoParticion info;
     InfoParticion::crearToken(info);
     cola.push(std::move(info));
 }
 
+//Se generan y cargan N tokens, N siendo la cantidad de hilos pedida.
 void generarYCargarNTokens(ThreadSafeQueue& cola, int cant_hilos) {
     for (int i = 0; i < cant_hilos; i++)
         generarYCargarToken(cola);
 }
 
+//Se crea en el heap un objeto derivado de la clase ResultadosParciales según
+//la operación requerida, y el puntero se almacena en la lista de resultados.
+//Se crean N particiones según las instrucciones pasadas, y cada una de las N
+//particiones son ingresadas a la thread safe queue. Se regresan la cantidad de
+//particiones (tareas) cargadas.
 int cargarPunteroAResultadoParcialYCargarInfoParticiones(ThreadSafeQueue& cola,
                 std::list<std::shared_ptr<ResultadosParciales>>& resultados,
                 const Instrucciones& instruc) {
@@ -65,6 +73,11 @@ void OutOfCoreSAC::cargarTareasRestantes(ThreadSafeQueue& cola,
     }
 }
 
+//Carga las filas del controla archivo dada por info, crea la partición
+//correspondiente y ejecuta la tarea correspondiente. El resultado parcial se
+//guarda en el objeto apuntado por el ptr resultados_parciales. En caso de que
+//el dataset no tenga un formato válido (filas incompletas o números
+//entrecortados).
 void cargarParticionYEjecutarTarea(InfoParticion& info,
                                            ControlaArchivo& controla_archivo) {
     std::list<Fila> filas;
@@ -74,6 +87,12 @@ void cargarParticionYEjecutarTarea(InfoParticion& info,
                           info.nro_columna, info.operacion);
 }
 
+//Se crea un controlador de archivo con el path y número de columnas recibido.
+//Se sacan tareas de la thread safe cola. Por cada tarea, se cargan las
+//filas requeridas, se crea la partición correspondiente, y se opera acorde
+//la información sacada de la cola. El resultado parcial se guarda en el
+//objeto apuntado por el ptr resultados_parciales. En caso de que el dataset
+//no tenga un formato válido (filas incompletas o números entrecortados)
 void ejecutarTareas(ThreadSafeQueue& cola, const char* path_al_archivo,
                      int nro_columnas) {
     ControlaArchivo controlaArchivo(path_al_archivo, nro_columnas);
@@ -97,10 +116,9 @@ void juntarResultadosParcialesYMostrar(
     }
 }
 
-void OutOfCoreSAC::hacerOperacionEnHiloMain() {
+void OutOfCoreSAC::hacerOperacionEnHiloMain(ThreadSafeQueue& cola,
+                  std::list<std::shared_ptr<ResultadosParciales>>& resultados) {
     //Como no se tendrán threads, cargo todas las particiones de una vez
-    std::list<std::shared_ptr<ResultadosParciales>> resultados;
-    ThreadSafeQueue cola;
     this->cargarTareasRestantes(cola, resultados);
     generarYCargarToken(cola);
     ejecutarTareas(cola, this->path_al_archivo, this->nro_columnas);
@@ -140,10 +158,9 @@ void OutOfCoreSAC::joinNHilos(std::list<std::thread>& hilos) {
     }
 }
 
-void OutOfCoreSAC::hacerOperacionesConNHilos() {
+void OutOfCoreSAC::hacerOperacionesConNHilos(ThreadSafeQueue& cola,
+                  std::list<std::shared_ptr<ResultadosParciales>>& resultados) {
     std::list<std::thread> hilos;
-    ThreadSafeQueue cola;
-    std::list<std::shared_ptr<ResultadosParciales>> resultados;
     this->cargarNTareas(cola, resultados);
     this->crearNHilos(cola, hilos);
     this->cargarTareasRestantes(cola, resultados);
@@ -153,10 +170,12 @@ void OutOfCoreSAC::hacerOperacionesConNHilos() {
 }
 
 void OutOfCoreSAC::hacerOperaciones() {
+    ThreadSafeQueue cola;
+    std::list<std::shared_ptr<ResultadosParciales>> resultados;
     if (this->cant_hilos == 0) //solo el hilo main
-        this->hacerOperacionEnHiloMain();
+        this->hacerOperacionEnHiloMain(cola, resultados);
     else
-        this->hacerOperacionesConNHilos();
+        this->hacerOperacionesConNHilos(cola, resultados);
 }
 
 OutOfCoreSAC::~OutOfCoreSAC() {

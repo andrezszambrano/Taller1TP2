@@ -19,11 +19,5 @@ void ThreadSafeQueue::pop(InfoParticion& info) {
     this->cola.pop();
 }
 
-/*
-int ThreadSafeQueue::size() {
-    return this->cola.size();
-}*/
-
 ThreadSafeQueue::~ThreadSafeQueue() {
 }
-

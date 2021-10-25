@@ -1,7 +1,7 @@
 #ifndef TP2FINAL_MANEJAPARTICIONES_H
 #define TP2FINAL_MANEJAPARTICIONES_H
 #include "ResultadosParciales.h"
-#include <array>
+#include <vector>
 #include <list>
 #include <stdint.h>
 #include <string>

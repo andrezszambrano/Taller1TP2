@@ -17,7 +17,7 @@ typedef struct Instrucciones{
 //3. El índice N de columna es válido (0 <= N < nro_columnas). 4. operacion es
 //sum, mean, min o max, entonces se devuelve 0. Por otro lado, si alguna de
 //estas condiciones no se cumple, se lanza una runtime exception con un mensaje
-//de error.
+//de error descriptivo.
 int recibirInstruccion(Instrucciones* instruc, int nro_columnas);
 
 #endif //TUTORIAL_RECIBEINSTRUCCIONES_H

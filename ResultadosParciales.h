@@ -18,7 +18,9 @@ public:
     static void crear(std::shared_ptr<ResultadosParciales>& ptr,
                         const std::string& op);
 
-    //Guarda el resultado parcial obtenido correspondientemente.
+    //Guarda los parámetros recibidos correspondientemente. Se usa un mutex
+    //para asegurar un guardado óptimo en situaciones donde hay varios hilos
+    //que pretenden guardar un resultado parcial.
     virtual void guardarResultado(int resultado, int cant_filas);
 
     //Se juntan los resultados finales acorde a la operación que le corresponde.
