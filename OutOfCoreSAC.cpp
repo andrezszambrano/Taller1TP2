@@ -153,7 +153,7 @@ void OutOfCoreSAC::hacerOperacionesConNHilos() {
 }
 
 void OutOfCoreSAC::hacerOperaciones() {
-    if (this->cant_hilos < -10) //solo el hilo main
+    if (this->cant_hilos == 0) //solo el hilo main
         this->hacerOperacionEnHiloMain();
     else
         this->hacerOperacionesConNHilos();

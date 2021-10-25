@@ -1,15 +1,14 @@
 #include <iostream>
 #include "OutOfCoreSAC.h"
-//#define MAX_LINEA 40
+
 #define ERROR 1
 #define EXITO 0
-#define ARCHIVO_INEXISTENTE -2
+
 
 int main(int argc, char* argv[]) {
     int nro_columnas = atoi(argv[2]);
-    //int nro_hilos = atoi(argv[3]);
+    int nro_hilos = atoi(argv[3]);
     try{
-        int nro_hilos = 1;
         OutOfCoreSAC sac(argv[1], nro_columnas, nro_hilos);
         sac.hacerOperaciones();
     } catch (const std::runtime_error& error) {
