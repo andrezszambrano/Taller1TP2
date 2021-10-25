@@ -17,6 +17,7 @@ void ResultadosParciales::crear(std::shared_ptr<ResultadosParciales>& ptr,
 }
 
 void ResultadosParciales::guardarResultado(int resultado, int cant_filas) {
+    const std::lock_guard<std::mutex> lock(this->mutex);
     this->resultados.push_back(resultado);
 }
 
@@ -107,8 +108,9 @@ ResultadosParcialesMean::ResultadosParcialesMean()
 }
 
 void ResultadosParcialesMean::guardarResultado(int resultado, int cant_filas) {
-    this->nro_filas = this->nro_filas + cant_filas;
     ResultadosParciales::guardarResultado(resultado, cant_filas);
+    const std::lock_guard<std::mutex> lock(this->mutex);
+    this->nro_filas = this->nro_filas + cant_filas;
 }
 
 void ResultadosParcialesMean::terminarOperacion() {

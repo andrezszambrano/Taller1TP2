@@ -3,11 +3,13 @@
 #include <list>
 #include <memory>
 #include <string>
+#include <mutex>
 
 class ResultadosParciales {
 protected:
     std::list<int> resultados;
     int resultado_final;
+    std::mutex mutex;
 
 public:
     //Crea un shared_pointer que apunta al heap a un objeto que pertenece a una
