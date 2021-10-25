@@ -14,6 +14,10 @@ OutOfCoreSAC::OutOfCoreSAC(const char* path_al_archivo, int nro_columnas,
                             :path_al_archivo(path_al_archivo),
                              nro_columnas(nro_columnas),
                              cant_hilos(nro_hilos) {
+    if (FILE *file = fopen(this->path_al_archivo, "r"))
+        fclose(file);
+    else
+        throw std::runtime_error("Error: el archivo no existe.");
 }
 
 void generarYCargarToken(ThreadSafeQueue& cola) {
@@ -62,7 +66,7 @@ void OutOfCoreSAC::cargarTareasRestantes(ThreadSafeQueue& cola,
 }
 
 void cargarParticionYEjecutarTarea(InfoParticion& info,
-                                           ControlaArchivo&& controla_archivo) {
+                                           ControlaArchivo& controla_archivo) {
     std::list<Fila> filas;
     controla_archivo.cargarFilasSegunInfo(filas, info);
     Particion particion(std::move(filas), filas.size());
@@ -72,15 +76,15 @@ void cargarParticionYEjecutarTarea(InfoParticion& info,
 
 void ejecutarTareas(ThreadSafeQueue& cola, const char* path_al_archivo,
                      int nro_columnas) {
+    ControlaArchivo controlaArchivo(path_al_archivo, nro_columnas);
     bool iterar = true;
     while (iterar) {
-        ControlaArchivo controlaArchivo(path_al_archivo, nro_columnas);
         InfoParticion info;
         cola.pop(info);
         if (info.finDeParticiones())
             iterar = false;
         else
-            cargarParticionYEjecutarTarea(info, std::move(controlaArchivo));
+            cargarParticionYEjecutarTarea(info, controlaArchivo);
     }
 }
 
