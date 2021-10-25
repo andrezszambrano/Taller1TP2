@@ -10,8 +10,10 @@ void ThreadSafeQueue::push(InfoParticion&& info) {
 }
 
 void ThreadSafeQueue::pop(InfoParticion& info) {
-    info = this->cola.front();
-    this->cola.pop();
+    if (!this->cola.empty()){
+        info = this->cola.front();
+        this->cola.pop();
+    }
 }
 
 ThreadSafeQueue::~ThreadSafeQueue() {

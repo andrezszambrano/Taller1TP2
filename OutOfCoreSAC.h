@@ -8,10 +8,12 @@
 #include "ResultadosParciales.h"
 #include <list>
 #include <string>
+#include <thread>
 
 class OutOfCoreSAC {
 private:
-    ControlaArchivo controla_archivo;
+    const char* path_al_archivo;
+    int nro_columnas;
     int cant_hilos;
 
 public:
@@ -43,7 +45,7 @@ private:
     //la instrucción recibida cargando dicho puntero a la lista de resultados
     //parciales. En caso de que alguna instrucción leída por stdin sea
     //incorrecta, se lanza una runtime exception con un mensaje acorde.
-    void cargarTodasLasTareas(ThreadSafeQueue& cola,
+    void cargarTareasRestantes(ThreadSafeQueue& cola,
                    std::list<std::shared_ptr<ResultadosParciales>>& resultados);
 
     //Se sacan tareas de la thread safe cola. Por cada tarea, se cargan las
@@ -51,13 +53,24 @@ private:
     //la información sacada de la cola. El resultado parcial se guarda en el
     //objeto apuntado por el ptr resultados_parciales. En caso de que el dataset
     //no tenga un formato válido (filas incompletas o números entrecortados)
-    void ejecutarTareas(ThreadSafeQueue& cola);
+    //void ejecutarTareas(ThreadSafeQueue& cola);
 
     //Carga las filas dada por info, crea la partición correspondiente y ejecuta
     //la tarea correspondiente. El resultado parcial se guarda en el objeto
     //apuntado por el ptr resultados_parciales. En caso de que el dataset
     //no tenga un formato válido (filas incompletas o números entrecortados)
-    void cargarParticionYEjecutarTarea(InfoParticion& info);
+    //void cargarParticionYEjecutarTarea(InfoParticion& info);
+
+    void hacerOperacionesConNHilos();
+
+    //Se cargan por lo menos N tareas a la thread safe cola, N siendo el número
+    //de hilos pedidos.
+    void cargarNTareas(ThreadSafeQueue& cola,
+                   std::list<std::shared_ptr<ResultadosParciales>>& resultados);
+
+    void crearNHilos(ThreadSafeQueue& cola, std::list<std::thread>& hilos);
+
+    void joinNHilos(std::list<std::thread>& hilos);
 };
 
 #endif //TP2FINAL_OUTOFCORESAC_H

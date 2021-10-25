@@ -15,7 +15,7 @@ public:
 
     Archivo(const Archivo& otro_archivo) = delete;
 
-    //Archivo(Archivo&& otro_archivo);
+    Archivo(Archivo&& otro_archivo);
 
     Archivo& operator=(const Archivo& otro_archivo);
 
@@ -40,20 +40,23 @@ class ControlaArchivo {
 private:
     Archivo archivo;
     int nro_columnas;
+    const char* path_al_archivo;
 
 public:
     //Crea un ControlaArchivo reservando todos sus recursos, recibiendo el path
     //al archivo que se quiere abrir y la cantidad de columnas que tiene cada
     //fila. En caso de que no se pueda abrir el archivo, se retorna una
     //run time excepción con mensaje.
-    ControlaArchivo(const char* pathAlArchivo, int nro_columnas);
+    ControlaArchivo(const char* path_al_archivo, int nro_columnas);
+
+    ControlaArchivo(ControlaArchivo&& otroControlador);
 
     //Carga la lista de filas recibidas por referencia según la información
     //recibida. Si hay algún error en el formato del dataset (filas incompletas
     //o números de un byte) se lanza una runtime exception con un mensaje.
     void cargarFilasSegunInfo(std::list<Fila>& filas,
                                               const InfoParticion& info);
-    int getNroColumnas();
+
     //Se liberan los recursos acorde.
     ~ControlaArchivo();
 

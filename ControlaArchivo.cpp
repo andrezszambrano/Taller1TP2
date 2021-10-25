@@ -24,6 +24,11 @@ Archivo::Archivo(const char* path_al_archivo) {
            throw std::runtime_error("Error: el archivo no existe.");
 }
 
+Archivo::Archivo(Archivo&& otro_archivo) {
+    this->ptr_archivo = otro_archivo.ptr_archivo;
+    otro_archivo.ptr_archivo = nullptr;
+}
+
 Archivo& Archivo::operator=(const Archivo& otro_archivo) { //CppLink se quejaba
     if (this != &otro_archivo) {                            //si no estaba
         this->ptr_archivo = otro_archivo.ptr_archivo;       //esta función
@@ -40,15 +45,23 @@ int Archivo::setearOffset(int offset) {
 }
 
 Archivo::~Archivo() {
-    fclose(this->ptr_archivo);
+    if (ptr_archivo)
+        fclose(this->ptr_archivo);
 }
 
 //--------------------CLASE ARCHIVO----------------------------------//
 
 //-----------------CLASE CONTROLA_ARCHIVO---------------------------//
 
-ControlaArchivo::ControlaArchivo(const char* pathAlArchivo, int nro_columnas)
-                :archivo(pathAlArchivo), nro_columnas(nro_columnas) {
+ControlaArchivo::ControlaArchivo(const char* path_al_archivo, int nro_columnas)
+                :archivo(path_al_archivo), nro_columnas(nro_columnas),
+                 path_al_archivo(path_al_archivo) {
+}
+
+ControlaArchivo::ControlaArchivo(ControlaArchivo&& otroControlador)
+                :archivo(std::move(otroControlador.archivo)),
+                 nro_columnas(otroControlador.nro_columnas),
+                 path_al_archivo(otroControlador.path_al_archivo) {
 }
 
 int ControlaArchivo::cargarFila(Fila& fila) {
@@ -91,10 +104,6 @@ void ControlaArchivo::cargarHastaNFilas(std::list<Fila>& filas,
         filas.push_back(std::move(fila_aux));
         filas_cargadas++;
     }
-}
-
-int ControlaArchivo::getNroColumnas(){
-    return this->nro_columnas;
 }
 
 ControlaArchivo::~ControlaArchivo(){
