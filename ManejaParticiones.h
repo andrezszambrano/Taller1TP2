@@ -104,7 +104,7 @@ public:
     //tiene información acerca de ninguna instrucción, sino que señala el fin
     //de tareas.
     void static crearToken(InfoParticion& info);
-    
+
     //Se usan los campos del otro para llenar a la nueva clase y se deja en
     //estado válido para ser destruido. Se crea entonces un nuevo objeto con los
     //campos del otro.

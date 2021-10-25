@@ -2,6 +2,8 @@
 #include <iostream>
 #include <string>
 
+//-------------------CLASE RESULTADOS PARCIALES-------------------------------//
+
 void ResultadosParciales::crear(std::shared_ptr<ResultadosParciales>& ptr,
                                 const std::string& op) {
     if (op == "sum")
@@ -31,6 +33,10 @@ void ResultadosParciales::imprimirResultado() {
     std::cout << resultado_final << std::endl;
 }
 
+//-------------------CLASE RESULTADOS PARCIALES-------------------------------//
+
+//-------------------CLASE RESULTADOS PARCIALES SUMA--------------------------//
+
 void ResultadosParcialesSuma::guardarResultado(int resultado, int cant_filas) {
     ResultadosParciales::guardarResultado(resultado, cant_filas);
 }
@@ -42,6 +48,11 @@ void ResultadosParcialesSuma::terminarOperacion() {
 void ResultadosParcialesSuma::imprimirResultado() {
     ResultadosParciales::imprimirResultado();
 }
+
+//-------------------CLASE RESULTADOS PARCIALES SUMA--------------------------//
+
+//-------------------CLASE RESULTADOS PARCIALES MIN--------------------------//
+
 
 void ResultadosParcialesMin::guardarResultado(int resultado, int cant_filas) {
     ResultadosParciales::guardarResultado(resultado, cant_filas);
@@ -62,6 +73,11 @@ void ResultadosParcialesMin::imprimirResultado() {
     ResultadosParciales::imprimirResultado();
 }
 
+//-------------------CLASE RESULTADOS PARCIALES MIN--------------------------//
+
+//-------------------CLASE RESULTADOS PARCIALES MAX--------------------------//
+
+
 void ResultadosParcialesMax::guardarResultado(int resultado, int cant_filas) {
     ResultadosParciales::guardarResultado(resultado, cant_filas);
 }
@@ -81,6 +97,11 @@ void ResultadosParcialesMax::imprimirResultado() {
     ResultadosParciales::imprimirResultado();
 }
 
+//-------------------CLASE RESULTADOS PARCIALES MAX--------------------------//
+
+//-------------------CLASE RESULTADOS PARCIALES MEAN--------------------------//
+
+
 ResultadosParcialesMean::ResultadosParcialesMean()
                         :nro_filas(0){
 }
@@ -97,3 +118,6 @@ void ResultadosParcialesMean::terminarOperacion() {
 void ResultadosParcialesMean::imprimirResultado() {
     std::cout << resultado_final << "/" << this->nro_filas  << std::endl;
 }
+
+//-------------------CLASE RESULTADOS PARCIALES MEAN--------------------------//
+
