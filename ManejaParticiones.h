@@ -25,7 +25,11 @@ public:
     //estado inválido.
     Fila(Fila&& otraFila);
 
-    //Devuelve el valor que contiene la fila en la columna dada.
+    //Devuelve el valor que contiene la fila en la columna dada. Si el número
+    //de columna no es válido (número es mayor o igual a cantidad de columnas
+    //que hay, o si es menor a cero) se lanza una runtime exception
+    //descriptiva. Los números de columna válidos son, entonces:
+    //0 <= N < cantidad de columnas.
     int getColumna(int nro_columna) const;
 
     //Añade el número pasado por parámetro, cambiando el estado de la fila

@@ -14,6 +14,10 @@ void ResultadosParciales::crear(std::shared_ptr<ResultadosParciales>& ptr,
         ptr = std::make_shared<ResultadosParcialesMax>();
     else if (op == "mean")
         ptr = std::make_shared<ResultadosParcialesMean>();
+    else
+        throw std::runtime_error("Error: no existe un objeto que maneje "
+                                 "la operación pedida. Las operaciones "
+                                 "posibles son 'sum', 'mean', 'min' y 'max'");
 }
 
 void ResultadosParciales::guardarResultado(int resultado, int cant_filas) {

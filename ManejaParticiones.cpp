@@ -19,7 +19,11 @@ void Fila::aniadirNumero(uint16_t num) {
 }
 
 int Fila::getColumna(int nro_columna) const{
-    return this->nums_fila[nro_columna];
+    if ((nro_columna < this->cant_columnas) && (nro_columna >= 0))
+        return this->nums_fila[nro_columna];
+    else
+        throw std::runtime_error("Error: el número de columna pedido no "
+                                 "es válido.");
 }
 
 Fila::~Fila() {

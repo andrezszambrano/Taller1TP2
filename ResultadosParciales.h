@@ -14,7 +14,9 @@ protected:
 public:
     //Crea un shared_pointer que apunta al heap a un objeto que pertenece a una
     //clase descendiente de ResultadosParciales, según sea el string pasado por
-    //parámetro.
+    //parámetro. Si la pasada operación pasada como string es incorrecta (es
+    //distinta a 'sum', 'mean', 'min' y 'max'), se lanza una runtime exception
+    //con un mensaje descriptivo.
     static void crear(std::shared_ptr<ResultadosParciales>& ptr,
                         const std::string& op);
 
